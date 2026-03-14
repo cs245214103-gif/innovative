@@ -29,7 +29,7 @@ pipeline {
 
   stage('Run Container') {
    steps {
-    bat 'docker run student-manager'
+    bat 'docker run -d student-manager'
    }
   }
 
