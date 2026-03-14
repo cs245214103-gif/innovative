@@ -1,67 +1,38 @@
-import java.util.ArrayList;
-import java.util.Scanner;
-
-class Student {
-    int roll;
-    String name;
-    int marks;
-
-    Student(int roll, String name, int marks) {
-        this.roll = roll;
-        this.name = name;
-        this.marks = marks;
-    }
-
-    void display() {
-        System.out.println("Roll No: " + roll + " Name: " + name + " Marks: " + marks);
-    }
-}
+import com.sun.net.httpserver.*;
+import java.io.*;
+import java.net.InetSocketAddress;
 
 public class StudentManager {
 
-    static ArrayList<Student> students = new ArrayList<>();
+    public static void main(String[] args) throws Exception {
 
-    public static void main(String[] args) {
+        HttpServer server = HttpServer.create(new InetSocketAddress(9090), 0);
 
-        Scanner sc = new Scanner(System.in);
+        server.createContext("/", exchange -> {
 
-        while (true) {
+            String html = """
+            <html>
+            <body>
+            <h2>Student Record Manager</h2>
 
-            System.out.println("\n--- Student Record Manager ---");
-            System.out.println("1. Add Student");
-            System.out.println("2. View Students");
-            System.out.println("3. Exit");
-            System.out.print("Enter choice: ");
+            <form action="/add" method="get">
+            Roll No: <input name="roll"><br><br>
+            Name: <input name="name"><br><br>
+            Marks: <input name="marks"><br><br>
+            <input type="submit" value="Add Student">
+            </form>
 
-            int choice = sc.nextInt();
+            </body>
+            </html>
+            """;
 
-            switch (choice) {
+            exchange.sendResponseHeaders(200, html.length());
+            OutputStream os = exchange.getResponseBody();
+            os.write(html.getBytes());
+            os.close();
+        });
 
-                case 1:
-                    System.out.print("Enter Roll Number: ");
-                    int roll = sc.nextInt();
-
-                    System.out.print("Enter Name: ");
-                    String name = sc.next();
-
-                    System.out.print("Enter Marks: ");
-                    int marks = sc.nextInt();
-
-                    students.add(new Student(roll, name, marks));
-                    System.out.println("Student Added Successfully");
-                    break;
-
-                case 2:
-                    System.out.println("\nStudent Records:");
-                    for (Student s : students) {
-                        s.display();
-                    }
-                    break;
-
-                case 3:
-                    System.out.println("Exiting...");
-                    System.exit(0);
-            }
-        }
+        server.start();
+        System.out.println("Server started at http://localhost:9090");
     }
 }
