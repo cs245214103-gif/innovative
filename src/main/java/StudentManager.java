@@ -47,20 +47,22 @@ public class StudentManager {
             <h3>Delete Student</h3>
             <form action="/delete">
             Roll No: <input name="roll"><br><br>
-            <input type="submit" value="Delete">
+            <input type="submit" value="Delete Student">
             </form>
 
             </body>
             </html>
             """;
 
+            exchange.getResponseHeaders().set("Content-Type", "text/html");
             exchange.sendResponseHeaders(200, html.length());
+
             OutputStream os = exchange.getResponseBody();
             os.write(html.getBytes());
             os.close();
         });
 
-        // Add student
+        // Add Student
         server.createContext("/add", exchange -> {
 
             String query = exchange.getRequestURI().getQuery();
@@ -72,35 +74,40 @@ public class StudentManager {
 
             students.add(new Student(roll,name,marks));
 
-            String response = "Student Added <br><a href='/'>Go Back</a>";
+            String response = "<html><body><h3>Student Added</h3><a href='/'>Go Back</a></body></html>";
 
+            exchange.getResponseHeaders().set("Content-Type", "text/html");
             exchange.sendResponseHeaders(200, response.length());
+
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
         });
 
-        // View students
+        // View Students
         server.createContext("/view", exchange -> {
 
-            StringBuilder html = new StringBuilder("<html><body><h2>Student List</h2>");
+            StringBuilder html = new StringBuilder();
+            html.append("<html><body><h2>Student List</h2>");
 
-            for(Student s:students){
+            for(Student s : students){
                 html.append("Roll: ").append(s.roll)
-                    .append(" Name: ").append(s.name)
-                    .append(" Marks: ").append(s.marks)
+                    .append(" | Name: ").append(s.name)
+                    .append(" | Marks: ").append(s.marks)
                     .append("<br>");
             }
 
             html.append("<br><a href='/'>Go Back</a></body></html>");
 
+            exchange.getResponseHeaders().set("Content-Type", "text/html");
             exchange.sendResponseHeaders(200, html.length());
+
             OutputStream os = exchange.getResponseBody();
             os.write(html.toString().getBytes());
             os.close();
         });
 
-        // Delete student
+        // Delete Student
         server.createContext("/delete", exchange -> {
 
             String query = exchange.getRequestURI().getQuery();
@@ -110,9 +117,11 @@ public class StudentManager {
 
             students.removeIf(s -> s.roll == roll);
 
-            String response = "Student Deleted <br><a href='/'>Go Back</a>";
+            String response = "<html><body><h3>Student Deleted</h3><a href='/'>Go Back</a></body></html>";
 
+            exchange.getResponseHeaders().set("Content-Type", "text/html");
             exchange.sendResponseHeaders(200, response.length());
+
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
@@ -123,15 +132,16 @@ public class StudentManager {
         System.out.println("Server started at http://localhost:9090");
     }
 
+    // Helper function
     static Map<String,String> parseQuery(String query){
 
         Map<String,String> map = new HashMap<>();
 
-        if(query==null) return map;
+        if(query == null) return map;
 
         for(String param : query.split("&")){
             String[] pair = param.split("=");
-            map.put(pair[0],pair[1]);
+            map.put(pair[0], pair[1]);
         }
 
         return map;
