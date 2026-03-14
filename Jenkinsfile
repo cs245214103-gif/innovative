@@ -1,24 +1,31 @@
 pipeline {
-    agent any
+ agent any
 
-    tools {
-        jdk 'JDK'
-        maven 'MAVEN'
-    }
+ stages {
 
-    stages {
+  stage('Clone Code') {
+   steps {
+    git 'https://github.com/yourrepo/student-manager.git'
+   }
+  }
 
-        stage('Build') {
-            steps {
-                bat 'mvn clean package'
-            }
-        }
+  stage('Build') {
+   steps {
+    sh 'mvn clean package'
+   }
+  }
 
-        stage('Deploy') {
-            steps {
-                echo 'Application Built and Deployed Successfully'
-            }
-        }
+  stage('Docker Build') {
+   steps {
+    sh 'docker build -t student-manager .'
+   }
+  }
 
-    }
+  stage('Run Container') {
+   steps {
+    sh 'docker run -d student-manager'
+   }
+  }
+
+ }
 }
