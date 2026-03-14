@@ -5,25 +5,25 @@ pipeline {
 
   stage('Clone Code') {
    steps {
-    git 'https://github.com/cs245214103-gif/innovative.git'
+    git branch: 'main', url: 'https://github.com/cs245214103-gif/innovative.git'
    }
   }
 
   stage('Build') {
    steps {
-    sh 'mvn clean package'
+    bat 'mvn clean package'
    }
   }
 
   stage('Docker Build') {
    steps {
-    sh 'docker build -t student-manager .'
+    bat 'docker build -t student-manager .'
    }
   }
 
   stage('Run Container') {
    steps {
-    sh 'docker run -d student-manager'
+    bat 'docker run -d student-manager'
    }
   }
 
