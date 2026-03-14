@@ -5,7 +5,7 @@ pipeline {
 
   stage('Clone Code') {
    steps {
-    git 'https://github.com/yourrepo/student-manager.git'
+    git 'https://github.com/cs245214103-gif/innovative.git'
    }
   }
 
