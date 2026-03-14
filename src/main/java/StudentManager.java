@@ -17,7 +17,7 @@ class Student {
     }
 }
 
-public class StudentRecordManager {
+public class StudentManager {
 
     static ArrayList<Student> students = new ArrayList<>();
 
