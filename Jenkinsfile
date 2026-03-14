@@ -29,7 +29,8 @@ pipeline {
 
   stage('Run Container') {
    steps {
-    bat 'docker run -d student-manager'
+     bat 'docker run -d --name student-container student-manager'
+     bat 'docker logs student-container'
    }
   }
 
