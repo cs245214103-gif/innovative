@@ -1,38 +1,40 @@
 pipeline {
- agent any
+agent any
 
- 
- tools {
-  jdk 'JDK'
-  maven 'MAVEN'
- }
+```
+tools {
+    maven 'MAVEN'
+    jdk 'JDK'
+}
 
- stages {
+stages {
 
-  stage('Clone Code') {
-   steps {
-    git branch: 'main', url: 'https://github.com/cs245214103-gif/innovative.git'
-   }
-  }
+    stage('Clone Code') {
+        steps {
+            git branch: 'main', url: 'https://github.com/cs245214103-gif/innovative.git'
+        }
+    }
 
-  stage('Build') {
-   steps {
-    bat 'mvn clean package'
-   }
-  }
+    stage('Build Project') {
+        steps {
+            bat 'mvn clean package'
+        }
+    }
 
-  stage('Docker Build') {
-   steps {
-    bat 'docker build -t student-manager .'
-   }
-  }
+    stage('Build Docker Image') {
+        steps {
+            bat 'docker build -t student-manager .'
+        }
+    }
 
-  stage('Run Container') {
-   steps {
-     bat 'echo 1 101 Arun 85 2 3 | docker run -i student-manager'
-     bat 'docker logs student-container'
-   }
-  }
+    stage('Run Container') {
+        steps {
+            bat 'docker rm -f student-container || exit 0'
+            bat 'docker run -d -p 9090:9090 --name student-container student-manager'
+        }
+    }
 
- }
+}
+```
+
 }
